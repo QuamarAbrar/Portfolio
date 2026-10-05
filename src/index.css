@@ -115,7 +115,7 @@ p { text-wrap: pretty; }
 .hero__intro { max-width: 30rem; font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.5; margin: 0; padding-top: 1.2rem; border-top: 1px solid var(--line); }
 .hero__portrait { grid-column: 2; grid-row: 1 / -1; align-self: end; justify-self: end; width: min(128%, 48rem); margin: 0 -6% -9rem 0; z-index: 1; transform-origin: bottom right; }
 .portrait-art { position: relative; isolation: isolate; }
-.portrait-art img { position: relative; z-index: 2; display: block; width: 100%; height: auto; -webkit-mask-image: url("./assets/portrait/quamar-cutout.png"); mask-image: url("./assets/portrait/quamar-cutout.png"); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; filter: drop-shadow(0 2rem 2rem rgba(11,59,46,.18)); }
+.portrait-art img { position: relative; z-index: 2; display: block; width: 100%; height: auto; filter: drop-shadow(0 2rem 2rem rgba(11,59,46,.18)); }
 .portrait-art__halo { position: absolute; z-index: 0; width: 72%; aspect-ratio: 1; left: 15%; top: 18%; border-radius: 50%; background: var(--green-soft); }
 .portrait-art__grid { display: none; }
 .portrait-art--compact .portrait-art__halo { background: var(--green-core); }
