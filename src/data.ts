@@ -41,10 +41,19 @@ export const philosophies = [
 export const socialLinks = [
   {
     label: "LinkedIn",
+    icon: "linkedin",
     url: "https://www.linkedin.com/in/quamar-abrar-7bb652381",
   },
-  { label: "Dribbble", url: "https://dribbble.com/quamar-abrar" },
-  { label: "Instagram", url: "https://www.instagram.com/lethargiccaveman" },
+  {
+    label: "Dribbble",
+    icon: "dribbble",
+    url: "https://dribbble.com/quamar-abrar",
+  },
+  {
+    label: "Instagram",
+    icon: "instagram",
+    url: "https://www.instagram.com/lethargiccaveman",
+  },
 ] as const
 
 export const desktopProjects = [

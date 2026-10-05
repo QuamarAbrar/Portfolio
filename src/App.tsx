@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import portraitCutout from "./assets/optimized/portrait/quamar-cutout.webp"
+import portraitOriginal from "./assets/portrait/quamar-original.png"
 import {
   desktopProjects,
   mobileProjects,
@@ -43,6 +44,48 @@ function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   )
 }
 
+type SocialIconName = typeof socialLinks[number]["icon"]
+
+function SocialIcon({ name }: { name: SocialIconName }) {
+  if (name === "linkedin") {
+    return (
+      <svg aria-hidden="true" className="social-icon" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M5.2 8.7h3.1V19H5.2zm1.55-5.1a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6ZM10.2 8.7h3v1.4c.7-1 1.8-1.7 3.4-1.7 3.1 0 3.7 2 3.7 4.7V19h-3.1v-5.2c0-1.3 0-2.8-1.8-2.8s-2 1.3-2 2.7V19h-3.2z"
+        />
+      </svg>
+    )
+  }
+
+  if (name === "dribbble") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="social-icon"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M8.25 3.8c4.15 4.2 6.6 9.7 7.35 16.1M3.2 9.3c5.3.15 10.4-1.4 14.15-4.35M4.5 17.95c3.2-4.05 8.5-6.1 15.2-5.75" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="social-icon"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect height="17" rx="4.5" width="17" x="3.5" y="3.5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.6" cy="6.7" fill="currentColor" r="1" />
+    </svg>
+  )
+}
+
 function PortraitArtwork({ compact = false }: { compact?: boolean }) {
   return (
     <div
@@ -52,7 +95,7 @@ function PortraitArtwork({ compact = false }: { compact?: boolean }) {
       <span className="portrait-art__halo" aria-hidden="true" />
       <span className="portrait-art__grid" aria-hidden="true" />
       <img
-        src={portraitCutout}
+        src={portraitOriginal}
         alt="Quamar Abrar standing with folded arms"
         decoding="async"
         fetchPriority="high"
@@ -904,10 +947,12 @@ function Contact() {
           {socialLinks.map((link) => (
             <a
               href={link.url}
+              aria-label={`${link.label} (opens in a new tab)`}
               key={link.label}
               rel="noreferrer"
               target="_blank"
             >
+              <SocialIcon name={link.icon} />
               {link.label}
             </a>
           ))}
