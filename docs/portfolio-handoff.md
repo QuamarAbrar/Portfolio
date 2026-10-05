@@ -18,9 +18,9 @@ The preloader uses one Canvas render loop and a single normalized GSAP progress 
 
 The supplied bundle includes Quamar's transparent portrait, mobile screens,
 poster artwork, and Aurel & Ember packaging images. Optimized WebP assets are
-used at runtime where provided; source files are retained alongside them.
-The 677 × 902 transparent portrait cutout is used directly in both the hero
-and preloader.
+used at runtime; original files are retained alongside them. The portrait is
+wired into the hero from the 1170 × 1219 original image, masked with the
+transparent cutout; the cutout also supplies the preloader silhouette.
 Desktop website cards embed the project URLs in `src/data.ts`.
 
 - Mobile screen, poster, and packaging assets are mapped in `src/data.ts`.

@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import portraitCutout from "./assets/portrait/quamar-cutout.png"
+import portraitCutout from "./assets/optimized/portrait/quamar-cutout.webp"
+import portraitOriginal from "./assets/portrait/quamar-original.png"
 import {
   desktopProjects,
   mobileProjects,
@@ -94,7 +95,7 @@ function PortraitArtwork({ compact = false }: { compact?: boolean }) {
       <span className="portrait-art__halo" aria-hidden="true" />
       <span className="portrait-art__grid" aria-hidden="true" />
       <img
-        src={portraitCutout}
+        src={portraitOriginal}
         alt="Quamar Abrar standing with folded arms"
         decoding="async"
         fetchPriority="high"
