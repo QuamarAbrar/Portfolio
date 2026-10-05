@@ -1,0 +1,12 @@
+{
+  "title": "Quamar Abrar — Graphic Designer",
+  "description": "Quamar Abrar is a Bengaluru-based graphic designer shaping identities, interfaces, and visual stories.",
+  "language": "en",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": true,
+    "ignoreReducedMotion": false
+  }
+}
