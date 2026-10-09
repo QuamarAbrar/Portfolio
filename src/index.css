@@ -21,7 +21,7 @@
   --hero-panel-width: 100vw;
   --hero-panel-height: 100svh;
   --hero-panel-art-height: min(74svh, 47rem, calc(92vw * 0.62));
-  --hero-portrait-width: min(68%, 56rem, calc(var(--hero-panel-art-height) * 1.04));
+  --hero-portrait-width: min(54.4%, 44.8rem, calc(var(--hero-panel-art-height) * 0.832));
 }
 
 * { box-sizing: border-box; }
@@ -127,7 +127,7 @@ p { text-wrap: pretty; }
 .hero__work-icon { display: grid; width: 3.25rem; height: 3.25rem; place-items: center; border: 1px solid var(--line-light); border-radius: 50%; transition: color .25s, background .25s, transform .25s; }
 .hero__work-icon .icon { width: 1rem; height: 1rem; }
 .hero__work-link:hover .hero__work-icon { color: var(--ink); background: var(--acid); transform: translateX(.2rem); }
-.hero__portrait { position: absolute; right: 0; bottom: -7%; left: 0; width: var(--hero-portrait-width); margin-inline: auto; z-index: 1; transform-origin: bottom center; }
+.hero__portrait { position: absolute; right: clamp(1.5rem, 5vw, 5rem); bottom: -7%; width: var(--hero-portrait-width); z-index: 1; transform-origin: bottom right; }
 .portrait-art { position: relative; isolation: isolate; }
 .portrait-art img { position: relative; z-index: 2; display: block; width: 100%; height: auto; -webkit-mask-image: url("./assets/portrait/quamar-cutout.png"); mask-image: url("./assets/portrait/quamar-cutout.png"); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; filter: drop-shadow(0 2rem 2rem rgba(11,59,46,.18)); }
 .portrait-art__halo { position: absolute; z-index: 0; width: min(44vw, 40rem); aspect-ratio: 1; left: 50%; top: 13%; transform: translateX(-50%); border-radius: 50%; background: var(--green-core); }
@@ -350,14 +350,14 @@ p { text-wrap: pretty; }
 @media (max-width: 899px) {
   :root {
     --hero-panel-art-height: min(76svh, 48rem, calc(94vw * 0.55));
-    --hero-portrait-width: min(72%, 44rem, calc(var(--hero-panel-art-height) * 1.04));
+    --hero-portrait-width: min(57.6%, 35.2rem, calc(var(--hero-panel-art-height) * 0.832));
   }
   .cursor { display: none; }
   .site-header { height: 4.5rem; padding: 0 1.5rem; padding-right: calc(1.5rem + 8.5rem); }
   .site-header nav { display: flex; gap: clamp(.85rem, 3vw, 1.6rem); font-size: .58rem; }
   .hero__copy { top: 53%; left: 2rem; width: 58%; }
   .hero__title { margin: 1rem 0 .75rem; font-size: clamp(3.4rem, 7vw, 5.4rem); }
-  .hero__portrait { right: 1%; bottom: -7%; }
+  .hero__portrait { right: 3%; bottom: -7%; }
   .hero__index { left: 2rem; bottom: 1.4rem; }
   .work__intro { min-height: 55rem; grid-template-columns: 1fr; align-items: start; align-content: center; gap: 4rem; }
   .work__intro h2 { font-size: clamp(3.6rem, 14vw, 6rem); }
@@ -395,7 +395,7 @@ p { text-wrap: pretty; }
 @media (max-width: 560px) {
   :root {
     --page: 1.15rem;
-    --hero-portrait-width: min(132%, 36rem);
+    --hero-portrait-width: min(105.6%, 28.8rem);
   }
   .contact-button { top: 1.15rem; right: 1.7rem; }
   .contact-button a { min-height: 2.7rem; padding: .7rem .9rem .7rem 1rem; }
@@ -412,7 +412,7 @@ p { text-wrap: pretty; }
   .hero__intro { max-width: 74%; font-size: .98rem; }
   .hero__work-link { margin-top: 1.1rem; }
   .hero__work-icon { width: 2.75rem; height: 2.75rem; }
-  .hero__portrait { bottom: -6%; }
+  .hero__portrait { right: -3%; bottom: -6%; }
   .hero__orb { left: 53%; bottom: -3.5rem; width: 7rem; }
   .hero__index { left: 1.25rem; bottom: 1.15rem; gap: .55rem; font-size: .48rem; }
   .hero__index-track { width: 3.25rem; }
