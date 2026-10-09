@@ -96,7 +96,7 @@ function PortraitArtwork({ compact = false }: { compact?: boolean }) {
       <span className="portrait-art__grid" aria-hidden="true" />
       <img
         src={portraitOriginal}
-        alt="Quamar Abrar standing with folded arms"
+        alt="Quamar Abrar wearing glasses and a dark sweater"
         decoding="async"
         fetchPriority="high"
       />
@@ -441,13 +441,12 @@ function Header() {
       <nav aria-label="Primary navigation">
         <a href="#work">Work</a>
         <a href="#about">About</a>
-        <a href="#contact">Contact</a>
       </nav>
     </header>
   )
 }
 
-function ConnectButton() {
+function ContactButton() {
   const root = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
@@ -478,9 +477,9 @@ function ConnectButton() {
   }, [])
 
   return (
-    <div className="connect-button" ref={root}>
+    <div className="contact-button" ref={root}>
       <a href="#contact">
-        Connect
+        Contact
         <Arrow diagonal />
       </a>
     </div>
@@ -490,33 +489,53 @@ function ConnectButton() {
 function Hero() {
   return (
     <section className="hero" id="top" aria-labelledby="hero-title">
-      <div className="hero__eyebrow reveal-item">
-        <span>Graphic designer</span>
-        <span>Bengaluru, India</span>
-      </div>
-      <h1 id="hero-title" className="hero__title">
-        <span className="title-line">
-          <span>Ideas, made</span>
-        </span>
-        <span className="title-line">
-          <span>tangible.</span>
-        </span>
-      </h1>
-      <div className="hero__portrait reveal-item">
-        <PortraitArtwork />
-      </div>
-      <div className="hero__footer reveal-item">
-        <p className="hero__intro">
-          I’m Quamar Abrar. I shape identities, interfaces, and visual stories
-          with clarity and character.
-        </p>
+      <div className="hero__panel">
+        <Header />
+        <span className="hero__orb" aria-hidden="true" />
+        <div className="hero__copy">
+          <div className="hero__eyebrow reveal-item">
+            <span>Graphic designer</span>
+            <span>Bengaluru, India</span>
+          </div>
+          <h1 id="hero-title" className="hero__title">
+            <span className="title-line">
+              <span>Ideas, made</span>
+            </span>
+            <span className="title-line">
+              <span>tangible.</span>
+            </span>
+          </h1>
+          <p className="hero__intro reveal-item">
+            I’m Quamar Abrar. I shape identities, interfaces, and visual stories
+            with clarity and character.
+          </p>
+          <a
+            className="hero__work-link reveal-item"
+            href="#work"
+            aria-label="Explore selected work"
+          >
+            <span className="hero__work-icon">
+              <Arrow diagonal />
+            </span>
+            <span>See selected work</span>
+          </a>
+        </div>
+        <div className="hero__portrait reveal-item">
+          <PortraitArtwork />
+        </div>
         <a
-          className="hero__work-link"
+          className="hero__index"
           href="#work"
-          aria-label="Explore selected work"
+          aria-label="Scroll to selected work"
         >
-          View selected work
-          <Arrow diagonal />
+          <span>01</span>
+          <span className="hero__index-track" aria-hidden="true">
+            <span />
+          </span>
+          <span>Scroll to explore</span>
+          <span className="hero__index-arrow" aria-hidden="true">
+            ↓
+          </span>
         </a>
       </div>
     </section>
@@ -1137,8 +1156,7 @@ export default function App() {
     <div className="app-shell" ref={page}>
       {showPreloader && <Preloader onComplete={completePreloader} />}
       <CustomCursor />
-      <Header />
-      <ConnectButton />
+      <ContactButton />
       <main>
         <Hero />
         <section className="work" id="work" aria-labelledby="work-heading">
