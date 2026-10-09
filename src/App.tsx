@@ -96,7 +96,7 @@ function PortraitArtwork({ compact = false }: { compact?: boolean }) {
       <span className="portrait-art__grid" aria-hidden="true" />
       <img
         src={portraitOriginal}
-        alt="Quamar Abrar with one hand resting behind his head"
+        alt="Quamar Abrar wearing glasses and a dark sweater"
         decoding="async"
         fetchPriority="high"
       />
