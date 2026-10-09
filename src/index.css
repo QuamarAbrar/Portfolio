@@ -21,7 +21,7 @@
   --hero-panel-width: 100vw;
   --hero-panel-height: 100svh;
   --hero-panel-art-height: min(74svh, 47rem, calc(92vw * 0.62));
-  --hero-portrait-width: min(23.8%, 19.6rem, calc(var(--hero-panel-art-height) * 0.364));
+  --hero-portrait-width: min(34%, 28rem, calc(var(--hero-panel-art-height) * 0.52));
 }
 
 * { box-sizing: border-box; }
@@ -350,7 +350,7 @@ p { text-wrap: pretty; }
 @media (max-width: 899px) {
   :root {
     --hero-panel-art-height: min(76svh, 48rem, calc(94vw * 0.55));
-    --hero-portrait-width: min(25.2%, 15.4rem, calc(var(--hero-panel-art-height) * 0.364));
+    --hero-portrait-width: min(36%, 22rem, calc(var(--hero-panel-art-height) * 0.52));
   }
   .cursor { display: none; }
   .site-header { height: 4.5rem; padding: 0 1.5rem; padding-right: calc(1.5rem + 8.5rem); }
@@ -395,7 +395,7 @@ p { text-wrap: pretty; }
 @media (max-width: 560px) {
   :root {
     --page: 1.15rem;
-    --hero-portrait-width: min(46.2%, 12.6rem);
+    --hero-portrait-width: min(66%, 18rem);
   }
   .contact-button { top: 1.15rem; right: 1.7rem; }
   .contact-button a { min-height: 2.7rem; padding: .7rem .9rem .7rem 1rem; }
