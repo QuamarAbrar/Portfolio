@@ -441,13 +441,12 @@ function Header() {
       <nav aria-label="Primary navigation">
         <a href="#work">Work</a>
         <a href="#about">About</a>
-        <a href="#contact">Contact</a>
       </nav>
     </header>
   )
 }
 
-function ConnectButton() {
+function ContactButton() {
   const root = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
@@ -478,9 +477,9 @@ function ConnectButton() {
   }, [])
 
   return (
-    <div className="connect-button" ref={root}>
+    <div className="contact-button" ref={root}>
       <a href="#contact">
-        Connect
+        Contact
         <Arrow diagonal />
       </a>
     </div>
@@ -1157,7 +1156,7 @@ export default function App() {
     <div className="app-shell" ref={page}>
       {showPreloader && <Preloader onComplete={completePreloader} />}
       <CustomCursor />
-      <ConnectButton />
+      <ContactButton />
       <main>
         <Hero />
         <section className="work" id="work" aria-labelledby="work-heading">
