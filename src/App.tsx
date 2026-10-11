@@ -652,7 +652,11 @@ function ProjectPreviewModal({
     >
       <div className="project-preview__panel">
         <div className="project-preview__header">
-          <span>{project.year} / Live experience</span>
+          <div className="project-preview__meta">
+            <span>{project.year}</span>
+            <span className="project-preview__sep">/</span>
+            <span>{project.discipline}</span>
+          </div>
           <h2 id="project-preview-title">{project.title}</h2>
           <button
             autoFocus
@@ -662,21 +666,27 @@ function ProjectPreviewModal({
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div className="preview-macbook">
-          <div className="preview-macbook__screen">
-            <iframe
-              src={project.url}
-              title={`${project.title} interactive live website preview`}
-            />
+        <div className="project-preview__stage">
+          <div className="preview-macbook">
+            <div className="preview-macbook__screen">
+              <iframe
+                src={project.url}
+                title={`${project.title} interactive live website preview`}
+              />
+            </div>
+            <div className="preview-macbook__base">
+              <i />
+            </div>
           </div>
-          <div className="preview-macbook__base">
-            <i />
-          </div>
-        </div>
-        <div className="project-preview__footer">
-          <span>{project.discipline}</span>
-          <a href={project.url} target="_blank" rel="noreferrer">
-            Visit the site <Arrow diagonal />
+          <a
+            className="preview-side-oval-btn"
+            href={project.url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Visit the live site for ${project.title}`}
+          >
+            <span>Visit site</span>
+            <Arrow diagonal />
           </a>
         </div>
       </div>
