@@ -11,6 +11,7 @@ import {
   posters,
   socialLinks,
 } from "./data"
+import { Chatbot } from "./Chatbot"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -652,7 +653,11 @@ function ProjectPreviewModal({
     >
       <div className="project-preview__panel">
         <div className="project-preview__header">
-          <span>{project.year} / Live experience</span>
+          <div className="project-preview__meta">
+            <span>{project.year}</span>
+            <span className="project-preview__sep">/</span>
+            <span>{project.discipline}</span>
+          </div>
           <h2 id="project-preview-title">{project.title}</h2>
           <button
             autoFocus
@@ -662,21 +667,31 @@ function ProjectPreviewModal({
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div className="preview-macbook">
-          <div className="preview-macbook__screen">
-            <iframe
-              src={project.url}
-              title={`${project.title} interactive live website preview`}
-            />
+        <div className="project-preview__stage">
+          <div className="preview-macbook">
+            <div className="preview-macbook__screen">
+              <iframe
+                src={project.url}
+                title={`${project.title} interactive live website preview`}
+              />
+            </div>
+            <div className="preview-macbook__base">
+              <i />
+            </div>
           </div>
-          <div className="preview-macbook__base">
-            <i />
-          </div>
-        </div>
-        <div className="project-preview__footer">
-          <span>{project.discipline}</span>
-          <a href={project.url} target="_blank" rel="noreferrer">
-            Visit the site <Arrow diagonal />
+          <a
+            className="preview-circle-btn"
+            href={project.url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Visit the live site for ${project.title}`}
+          >
+            <span>
+              Visit
+              <br />
+              Site
+            </span>
+            <Arrow diagonal />
           </a>
         </div>
       </div>
@@ -1021,9 +1036,18 @@ function CustomCursor() {
     }
     const over = (event: MouseEvent) => {
       if (!cursor.current) return
+      const target = event.target as HTMLElement | null
+      const isInsideTerminal = Boolean(
+        target?.closest(".qa-terminal, .qa-launcher-wrap, .project-preview"),
+      )
+      if (isInsideTerminal) {
+        cursor.current.classList.add("is-hidden")
+        return
+      }
+      cursor.current.classList.remove("is-hidden")
       cursor.current.classList.toggle(
         "is-active",
-        Boolean((event.target as HTMLElement).closest("a, button")),
+        Boolean(target?.closest("a, button")),
       )
     }
     window.addEventListener("pointermove", move)
@@ -1211,6 +1235,16 @@ export default function App() {
           onClose={() => setPreviewProject(null)}
         />
       )}
+      <Chatbot
+        onOpenProjectPreview={(title) => {
+          const match = desktopProjects.find(
+            (p) => p.title.toLowerCase() === title.toLowerCase(),
+          )
+          if (match) {
+            setPreviewProject(match)
+          }
+        }}
+      />
       <Contact />
     </div>
   )
