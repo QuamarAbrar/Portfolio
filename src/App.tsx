@@ -3,6 +3,7 @@ import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import portraitCutout from "./assets/optimized/portrait/quamar-cutout.webp"
 import portraitOriginal from "./assets/portrait/quamar-original.png"
+import portraitSeatedCropped from "./assets/optimized/portrait/quamar-seated-cropped.webp"
 import {
   desktopProjects,
   mobileProjects,
@@ -487,42 +488,103 @@ function ContactButton() {
 }
 
 function Hero() {
+  const heroRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const hero = heroRef.current
+    if (!hero) return
+
+    const media = window.matchMedia("(min-width: 900px) and (hover: hover)")
+    if (!media.matches) return
+
+    const portraitX = gsap.quickTo(".hero__portrait-inner", "x", { duration: 0.9, ease: "power2.out" })
+    const portraitY = gsap.quickTo(".hero__portrait-inner", "y", { duration: 0.9, ease: "power2.out" })
+    const portraitRot = gsap.quickTo(".hero__portrait-inner", "rotation", { duration: 1.1, ease: "power2.out" })
+    const glowX = gsap.quickTo(".hero__backdrop-glow", "x", { duration: 1.2, ease: "power2.out" })
+    const glowY = gsap.quickTo(".hero__backdrop-glow", "y", { duration: 1.2, ease: "power2.out" })
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = hero.getBoundingClientRect()
+      const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2
+      const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2
+
+      portraitX(nx * 18)
+      portraitY(ny * 10)
+      portraitRot(nx * 0.75)
+      glowX(nx * 32)
+      glowY(ny * 18)
+    }
+
+    const handleMouseLeave = () => {
+      portraitX(0)
+      portraitY(0)
+      portraitRot(0)
+      glowX(0)
+      glowY(0)
+    }
+
+    hero.addEventListener("mousemove", handleMouseMove)
+    hero.addEventListener("mouseleave", handleMouseLeave)
+
+    return () => {
+      hero.removeEventListener("mousemove", handleMouseMove)
+      hero.removeEventListener("mouseleave", handleMouseLeave)
+    }
+  }, [])
+
   return (
-    <section className="hero" id="top" aria-labelledby="hero-title">
+    <section className="hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
       <div className="hero__panel">
         <Header />
-        <span className="hero__orb" aria-hidden="true" />
-        <div className="hero__copy">
-          <div className="hero__eyebrow reveal-item">
-            <span>Graphic designer</span>
-            <span>Bengaluru, India</span>
+
+        {/* Ambient atmospheric studio lighting */}
+        <div className="hero__backdrop" aria-hidden="true">
+          <div className="hero__backdrop-glow" />
+        </div>
+
+        {/* Monumental kinetic background typography ribbon moving left on scroll */}
+        <div className="hero__display-wrap" aria-hidden="true">
+          <div className="hero__display-track">
+            <span className="hero__display-name">QUAMAR ABRAR</span>
+            <span className="hero__display-dot">•</span>
+            <span className="hero__display-name">GRAPHIC DESIGNER</span>
+            <span className="hero__display-dot">•</span>
+            <span className="hero__display-name">BENGALURU</span>
+            <span className="hero__display-dot">•</span>
+            <span className="hero__display-name">QUAMAR ABRAR</span>
+            <span className="hero__display-dot">•</span>
+            <span className="hero__display-name">GRAPHIC DESIGNER</span>
+            <span className="hero__display-dot">•</span>
+            <span className="hero__display-name">BENGALURU</span>
           </div>
-          <h1 id="hero-title" className="hero__title">
-            <span className="title-line">
-              <span>Ideas, made</span>
-            </span>
-            <span className="title-line">
-              <span>tangible.</span>
-            </span>
+        </div>
+
+        {/* Foreground seated portrait cutout overlaying on top of the monumental text */}
+        <div className="hero__portrait">
+          <div className="hero__portrait-inner">
+            <img
+              src={portraitSeatedCropped}
+              alt="Quamar Abrar sitting on a minimalist designer armchair"
+              className="hero__portrait-img"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </div>
+        </div>
+
+        {/* Essential metadata: Name, Role, Location positioned with generous editorial breathing room */}
+        <div className="hero__meta">
+          <h1 id="hero-title" className="hero__name">
+            Quamar Abrar
           </h1>
-          <p className="hero__intro reveal-item">
-            I’m Quamar Abrar. I shape identities, interfaces, and visual stories
-            with clarity and character.
-          </p>
-          <a
-            className="hero__work-link reveal-item"
-            href="#work"
-            aria-label="Explore selected work"
-          >
-            <span className="hero__work-icon">
-              <Arrow diagonal />
-            </span>
-            <span>See selected work</span>
-          </a>
+          <div className="hero__details">
+            <span className="hero__role">Graphic designer</span>
+            <span className="hero__dot" aria-hidden="true">•</span>
+            <span className="hero__location">Bengaluru, India</span>
+          </div>
         </div>
-        <div className="hero__portrait reveal-item">
-          <PortraitArtwork />
-        </div>
+
+        {/* Scroll to explore indicator */}
         <a
           className="hero__index"
           href="#work"
@@ -1068,13 +1130,39 @@ export default function App() {
     }
     const media = gsap.matchMedia()
     const context = gsap.context(() => {
-      gsap.fromTo(".hero .reveal-item", { opacity: 0, y: 35 }, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        stagger: 0.09,
-        ease: "power3.out",
+      // Hero entrance choreography
+      const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } })
+      heroTl
+        .fromTo(".hero__backdrop-glow", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 1.8 }, 0)
+        .fromTo(".hero__display-wrap", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 1.5 }, 0.1)
+        .fromTo(".hero__meta > *", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12 }, 0.3)
+        .fromTo(".hero__index", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.9 }, 0.45)
+
+      // Kinetic background text moves to the left upon scrolling
+      gsap.to(".hero__display-track", {
+        xPercent: -35,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.8,
+        },
       })
+
+      // Metadata and index softly fade on scroll
+      gsap.to(".hero__meta, .hero__index", {
+        y: 28,
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "65% top",
+          scrub: 0.6,
+        },
+      })
+
       gsap.fromTo(".title-line > span", { yPercent: 115, rotate: 2 }, {
         yPercent: 0,
         rotate: 0,
@@ -1096,8 +1184,7 @@ export default function App() {
         "(min-width: 900px) and (prefers-reduced-motion: no-preference)",
         () => {
           gsap.to(".hero__portrait", {
-            yPercent: 14,
-            rotate: 2,
+            y: 45,
             ease: "none",
             scrollTrigger: {
               trigger: ".hero",
