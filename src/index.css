@@ -1189,7 +1189,7 @@ body.qa-open .cursor {
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: clamp(1rem, 2.5vw, 2.5rem);
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 calc(0.5rem + 10px) clamp(2.5rem, 5vw, 5.5rem);
   width: 100%;
 }
 
@@ -1207,7 +1207,7 @@ body.qa-open .cursor {
 .preview-macbook__screen {
   position: relative;
   aspect-ratio: 16/10;
-  max-height: calc(92vh - 105px);
+  max-height: calc(92vh - 115px);
   overflow: hidden;
   border: .75rem solid #17201d;
   border-radius: 1.2rem 1.2rem .3rem .3rem;
@@ -1299,6 +1299,7 @@ body.qa-open .cursor {
     flex-direction: column;
     align-items: center;
     position: relative;
+    padding: 0.5rem 0 calc(0.5rem + 10px);
   }
 
   .preview-side-oval-btn,
