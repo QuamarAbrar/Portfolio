@@ -378,7 +378,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
               state.progress,
             ),
         })
-        // 2. Seamlessly connected: as shapes lock into the silhouette, portrait materializes in place
+        // 2. Seamlessly connected: portrait materializes 250ms later, once shapes have assembled the silhouette
         .to(
           portraitRef.current,
           {
@@ -386,9 +386,9 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
             duration: 0.85,
             ease: "power2.out",
           },
-          1.35,
+          1.6,
         )
-        // 3. Canvas shapes dissolve smoothly into the materialized portrait
+        // 3. Canvas shapes dissolve smoothly as portrait finishes materializing
         .to(
           node,
           {
@@ -396,7 +396,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
             duration: 0.65,
             ease: "power2.inOut",
           },
-          1.95,
+          2.2,
         )
         // 4. Identity badge enters smoothly
         .to(
@@ -407,7 +407,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
             duration: 0.5,
             ease: "power2.out",
           },
-          2.05,
+          2.3,
         )
         // 5. Brief hold before curtain roll
         .to({}, { duration: 0.4 })
