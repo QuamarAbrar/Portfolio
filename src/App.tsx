@@ -364,10 +364,10 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
     const ctx = gsap.context(() => {
       timeline.current = gsap
         .timeline({ onComplete: finish })
-        // 1. Shapes fly in and converge to form the portrait silhouette
+        // 1. Shapes fly in and converge to form the portrait silhouette (photo remains hidden)
         .to(state, {
           progress: 1,
-          duration: 2.2,
+          duration: 2.0,
           ease: "power2.inOut",
           onUpdate: () =>
             drawParticles(
@@ -378,39 +378,38 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
               state.progress,
             ),
         })
-        // 2. Seamlessly connected: portrait materializes 250ms later, once shapes have assembled the silhouette
-        .to(
-          portraitRef.current,
-          {
-            opacity: 1,
-            duration: 0.85,
-            ease: "power2.out",
-          },
-          1.6,
-        )
-        // 3. Canvas shapes dissolve smoothly as portrait finishes materializing
+        // 2. Shapes are fully formed; at that exact instant (2.1s), shapes disappear and photo is revealed
         .to(
           node,
           {
             opacity: 0,
-            duration: 0.65,
+            duration: 0.45,
             ease: "power2.inOut",
           },
-          2.2,
+          2.1,
         )
-        // 4. Identity badge enters smoothly
+        .to(
+          portraitRef.current,
+          {
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          2.1,
+        )
+        // 3. Identity badge enters smoothly
         .to(
           ".preloader__identity",
           {
             opacity: 1,
             y: 0,
-            duration: 0.5,
+            duration: 0.45,
             ease: "power2.out",
           },
-          2.3,
+          2.45,
         )
-        // 5. Brief hold before curtain roll
-        .to({}, { duration: 0.4 })
+        // 4. Brief hold before curtain roll
+        .to({}, { duration: 0.45 })
     }, root)
 
     const labelTimer = window.setInterval(() => {
