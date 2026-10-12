@@ -132,16 +132,15 @@ type DesktopSiteSnapshotProps = {
 
 function samplePortraitTargets(
   image: HTMLImageElement,
-  width: number,
-  height: number,
+  portraitRect: { left: number; top: number; width: number; height: number },
   count: number,
 ) {
   const mask = document.createElement("canvas")
   const maskContext = mask.getContext("2d", { willReadFrequently: true })
   if (!maskContext) return []
 
-  const imgW = image.naturalWidth || 600
-  const imgH = image.naturalHeight || 350
+  const imgW = image.naturalWidth || 1080
+  const imgH = image.naturalHeight || 700
   mask.width = 240
   mask.height = Math.max(100, Math.round(240 * (imgH / imgW)))
   maskContext.drawImage(image, 0, 0, mask.width, mask.height)
@@ -156,10 +155,7 @@ function samplePortraitTargets(
     }
   }
 
-  const displayWidth = Math.min(width * 0.65, 660)
-  const displayHeight = displayWidth * (mask.height / mask.width)
-  const left = (width - displayWidth) / 2
-  const top = height * 0.5 - displayHeight * 0.5
+  const { left, top, width: displayWidth, height: displayHeight } = portraitRect
   const targets: Point[] = []
   if (candidates.length === 0) return []
   const step = Math.max(1, Math.floor(candidates.length / count))
@@ -210,15 +206,15 @@ function createParticles(
     points.push({
       sx,
       sy,
-      cx: width * (0.2 + random() * 0.6),
-      cy: height * (0.1 + random() * 0.8),
+      cx: width * 0.5 + (random() - 0.5) * width * 0.6,
+      cy: height * 0.5 + (random() - 0.5) * height * 0.6,
       tx,
       ty,
-      size: 3 + random() * 8,
-      rotation: random() * Math.PI,
+      size: 3.5 + random() * 7,
+      rotation: random() * Math.PI * 2,
       color: colors[i % colors.length],
       shape: i % 3,
-      delay: (i % 18) / 26,
+      delay: ((i % 16) / 16) * 0.35,
     })
   }
   return points
@@ -237,6 +233,7 @@ function drawParticles(
       0,
       Math.min(1, (progress - particle.delay) / (1 - particle.delay)),
     )
+    if (local <= 0) return
     const inverse = 1 - local
     const x =
       inverse * inverse * particle.sx +
@@ -246,13 +243,13 @@ function drawParticles(
       inverse * inverse * particle.sy +
       2 * inverse * local * particle.cy +
       local * local * particle.ty
-    const flutter = Math.sin(progress * 38 + index) * (1 - local) * 0.8
-    const size = particle.size * (0.6 + local * 0.7)
+    const flutter = Math.sin(progress * 28 + index) * (1 - local) * 0.5
+    const size = particle.size * (0.65 + local * 0.6)
     context.save()
     context.translate(x, y)
     context.rotate(particle.rotation + flutter)
     context.fillStyle = particle.color
-    context.globalAlpha = Math.min(1, local * 4 + 0.25)
+    context.globalAlpha = Math.min(1, local * 3 + 0.2)
     if (particle.shape === 0) {
       context.beginPath()
       context.moveTo(0, -size)
@@ -274,6 +271,8 @@ function drawParticles(
 function Preloader({ onComplete }: { onComplete: () => void }) {
   const root = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
+  const portraitRef = useRef<HTMLDivElement>(null)
+  const portraitImgRef = useRef<HTMLImageElement>(null)
   const [canSkip, setCanSkip] = useState(false)
   const [label, setLabel] = useState<typeof philosophies[number]>(
     philosophies[0],
@@ -315,20 +314,38 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 1.5)
       const bounds = container.getBoundingClientRect()
-      const particleCount = bounds.width < 700 ? 82 : 160
+      const particleCount = bounds.width < 700 ? 86 : 170
       node.width = bounds.width * ratio
       node.height = bounds.height * ratio
       node.style.width = `${bounds.width}px`
       node.style.height = `${bounds.height}px`
       context.setTransform(ratio, 0, 0, ratio, 0, 0)
+
+      let pRect = {
+        left: (bounds.width - Math.min(bounds.width * 0.86, 700)) / 2,
+        top:
+          (bounds.height -
+            Math.min(bounds.width * 0.86, 700) * (700 / 1080)) /
+          2,
+        width: Math.min(bounds.width * 0.86, 700),
+        height: Math.min(bounds.width * 0.86, 700) * (700 / 1080),
+      }
+
+      if (portraitImgRef.current) {
+        const imgBounds = portraitImgRef.current.getBoundingClientRect()
+        if (imgBounds.width > 0 && imgBounds.height > 0) {
+          pRect = {
+            left: imgBounds.left - bounds.left,
+            top: imgBounds.top - bounds.top,
+            width: imgBounds.width,
+            height: imgBounds.height,
+          }
+        }
+      }
+
       const targets =
         portraitImage.complete && portraitImage.naturalWidth
-          ? samplePortraitTargets(
-              portraitImage,
-              bounds.width,
-              bounds.height,
-              particleCount,
-            )
+          ? samplePortraitTargets(portraitImage, pRect, particleCount)
           : []
       particles = createParticles(
         bounds.width,
@@ -337,16 +354,20 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
         targets,
       )
     }
+
     portraitImage.addEventListener("load", resize)
+    const imgEl = portraitImgRef.current
+    imgEl?.addEventListener("load", resize)
     resize()
 
     const state = { progress: 0 }
     const ctx = gsap.context(() => {
       timeline.current = gsap
         .timeline({ onComplete: finish })
+        // 1. Shapes fly in and converge to form the portrait silhouette
         .to(state, {
           progress: 1,
-          duration: 2.6,
+          duration: 2.2,
           ease: "power2.inOut",
           onUpdate: () =>
             drawParticles(
@@ -357,23 +378,39 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
               state.progress,
             ),
         })
-        .fromTo(
-          ".preloader__portrait",
-          { opacity: 0, scale: 0.94, y: 15 },
-          { opacity: 1, scale: 1, y: 0, duration: 0.85, ease: "power2.out" },
-          "-=0.7",
+        // 2. Seamlessly connected: as shapes lock into the silhouette, portrait materializes in place
+        .to(
+          portraitRef.current,
+          {
+            opacity: 1,
+            duration: 0.85,
+            ease: "power2.out",
+          },
+          1.35,
         )
+        // 3. Canvas shapes dissolve smoothly into the materialized portrait
         .to(
           node,
-          { opacity: 0, duration: 0.7, ease: "power2.inOut" },
-          "-=0.4",
+          {
+            opacity: 0,
+            duration: 0.65,
+            ease: "power2.inOut",
+          },
+          1.95,
         )
+        // 4. Identity badge enters smoothly
         .to(
           ".preloader__identity",
-          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
-          "-=0.5",
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          2.05,
         )
-        .to({}, { duration: 0.45 })
+        // 5. Brief hold before curtain roll
+        .to({}, { duration: 0.4 })
     }, root)
 
     const labelTimer = window.setInterval(() => {
@@ -392,6 +429,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
       window.clearTimeout(skipTimer)
       window.removeEventListener("resize", resize)
       portraitImage.removeEventListener("load", resize)
+      imgEl?.removeEventListener("load", resize)
     }
   }, [])
 
@@ -407,9 +445,10 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
         <span>18 philosophies → 1 identity</span>
       </div>
       <canvas ref={canvas} className="preloader__canvas" aria-hidden="true" />
-      <div className="preloader__portrait" aria-hidden="true">
+      <div className="preloader__portrait" ref={portraitRef} aria-hidden="true">
         <span className="preloader__glow" aria-hidden="true" />
         <img
+          ref={portraitImgRef}
           src={portraitSeatedCropped}
           alt="Quamar Abrar seated"
           className="preloader__portrait-img"

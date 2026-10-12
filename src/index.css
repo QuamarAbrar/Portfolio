@@ -149,6 +149,8 @@ body.qa-open .cursor {
   position: absolute;
   inset: 0;
   transform-origin: center;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .preloader__top,
@@ -156,7 +158,7 @@ body.qa-open .cursor {
   position: absolute;
   left: var(--page);
   right: var(--page);
-  z-index: 2;
+  z-index: 4;
   display: flex;
   justify-content: space-between;
   text-transform: uppercase;
@@ -209,6 +211,7 @@ body.qa-open .cursor {
 .preloader__portrait-img {
   width: 100%;
   height: auto;
+  aspect-ratio: 1080 / 700;
   object-fit: contain;
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.38));
 }
