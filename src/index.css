@@ -1038,8 +1038,8 @@ body.qa-open .cursor {
 }
 
 .project-preview__panel {
-  width: min(88rem, 96vw);
-  height: min(92vh, 860px);
+  width: min(91rem, 96vw);
+  height: min(92vh, 890px);
   max-height: 94svh;
   display: flex;
   flex-direction: column;
@@ -1118,7 +1118,7 @@ body.qa-open .cursor {
 
 .preview-macbook {
   width: 100%;
-  max-width: 68rem;
+  max-width: calc(68rem + 48px);
   max-height: 100%;
   margin: 0 auto;
   display: flex;
@@ -1130,7 +1130,7 @@ body.qa-open .cursor {
 .preview-macbook__screen {
   position: relative;
   aspect-ratio: 16/10;
-  max-height: calc(92vh - 180px);
+  max-height: calc(92vh - 150px);
   overflow: hidden;
   border: .75rem solid #17201d;
   border-radius: 1.2rem 1.2rem .3rem .3rem;
