@@ -644,65 +644,9 @@ function Hero() {
   )
 }
 
-function DeviceDesktopIcon() {
-  return (
-    <svg aria-hidden="true" className="icon-preview-ctrl" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="3" width="20" height="14" rx="2" />
-      <line x1="8" y1="21" x2="16" y2="21" />
-      <line x1="12" y1="17" x2="12" y2="21" />
-    </svg>
-  )
-}
-
-function DeviceMobileIcon() {
-  return (
-    <svg aria-hidden="true" className="icon-preview-ctrl" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="5" y="2" width="14" height="20" rx="3" />
-      <line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="2.5" />
-    </svg>
-  )
-}
-
-function ReloadIcon() {
-  return (
-    <svg aria-hidden="true" className="icon-preview-ctrl" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-      <path d="M3 3v5h5" />
-      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-      <path d="M16 21h5v-5" />
-    </svg>
-  )
-}
-
-function ChevronLeftIcon() {
-  return (
-    <svg aria-hidden="true" className="icon-preview-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="15 18 9 12 15 6" />
-    </svg>
-  )
-}
-
-function ChevronRightIcon() {
-  return (
-    <svg aria-hidden="true" className="icon-preview-nav" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  )
-}
-
-function LockIcon() {
-  return (
-    <svg aria-hidden="true" className="icon-preview-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
-  )
-}
-
 function DesktopSiteSnapshot({ url, title }: DesktopSiteSnapshotProps) {
   const container = useRef<HTMLDivElement>(null)
   const frame = useRef<HTMLIFrameElement>(null)
-  const [loaded, setLoaded] = useState(false)
 
   useLayoutEffect(() => {
     const containerNode = container.current
@@ -728,19 +672,12 @@ function DesktopSiteSnapshot({ url, title }: DesktopSiteSnapshotProps) {
 
   return (
     <div className="scaled-preview" ref={container}>
-      {!loaded && (
-        <div className="scaled-preview__skeleton" aria-hidden="true">
-          <span className="scaled-preview__pulse" />
-        </div>
-      )}
       <iframe
         ref={frame}
         src={url}
         title={`${title} desktop website snapshot`}
         loading="lazy"
         tabIndex={-1}
-        onLoad={() => setLoaded(true)}
-        style={{ opacity: loaded ? 1 : 0, transition: "opacity 0.4s ease" }}
       />
     </div>
   )
@@ -765,16 +702,12 @@ function DesktopProject({
         className="project-card__link"
         type="button"
         onClick={() => onOpen(project)}
-        aria-label={`Open ${project.title} live interactive preview`}
+        aria-label={`Open ${project.title} project preview`}
       />
       <div className={`macbook project-card__visual project-device--${device}`}>
         <div className="project-device__shell">
           <div className="project-device__screen">
             <DesktopSiteSnapshot url={project.url} title={project.title} />
-            <div className="project-card__hover-badge" aria-hidden="true">
-              <span>Preview Live Site</span>
-              <Arrow diagonal />
-            </div>
           </div>
           <div className="project-device__base" aria-hidden="true" />
         </div>
@@ -792,68 +725,22 @@ function DesktopProject({
 function ProjectPreviewModal({
   project,
   onClose,
-  onSelectProject,
 }: {
   project: DesktopProjectData
   onClose: () => void
-  onSelectProject: (project: DesktopProjectData) => void
 }) {
-  const [deviceMode, setDeviceMode] = useState<"desktop" | "mobile">("desktop")
-  const [isLoading, setIsLoading] = useState(true)
-  const [reloadKey, setReloadKey] = useState(0)
-
-  const currentIndex = desktopProjects.findIndex((p) => p.title === project.title)
-  const prevProject =
-    currentIndex > 0 ? desktopProjects[currentIndex - 1] : desktopProjects[desktopProjects.length - 1]
-  const nextProject =
-    currentIndex < desktopProjects.length - 1
-      ? desktopProjects[currentIndex + 1]
-      : desktopProjects[0]
-
-  const goToPrev = () => {
-    setIsLoading(true)
-    onSelectProject(prevProject)
-  }
-
-  const goToNext = () => {
-    setIsLoading(true)
-    onSelectProject(nextProject)
-  }
-
-  const reload = () => {
-    setIsLoading(true)
-    setReloadKey((prev) => prev + 1)
-  }
-
-  useEffect(() => {
-    setIsLoading(true)
-  }, [project.title, deviceMode])
-
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose()
-      } else if (event.key === "ArrowLeft") {
-        goToPrev()
-      } else if (event.key === "ArrowRight") {
-        goToNext()
-      } else if (
-        (event.key === "r" || event.key === "R") &&
-        !["INPUT", "TEXTAREA"].includes((event.target as HTMLElement)?.tagName)
-      ) {
-        reload()
-      }
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose()
     }
     document.body.style.overflow = "hidden"
-    window.addEventListener("keydown", handleKeyDown)
+    window.addEventListener("keydown", closeOnEscape)
     return () => {
       document.body.style.overflow = previousOverflow
-      window.removeEventListener("keydown", handleKeyDown)
+      window.removeEventListener("keydown", closeOnEscape)
     }
-  }, [onClose, currentIndex])
-
-  const domain = project.url.replace(/^https?:\/\//, "")
+  }, [onClose])
 
   return (
     <div
@@ -868,160 +755,41 @@ function ProjectPreviewModal({
       <div className="project-preview__panel">
         <div className="project-preview__header">
           <div className="project-preview__meta">
-            <span className="project-preview__index">
-              {String(currentIndex + 1).padStart(2, "0")} / {String(desktopProjects.length).padStart(2, "0")}
-            </span>
-            <span className="project-preview__sep">/</span>
             <span>{project.year}</span>
             <span className="project-preview__sep">/</span>
             <span>{project.discipline}</span>
           </div>
-
-          <div className="project-preview__url-bar" title={project.url}>
-            <span className="project-preview__live-dot" aria-hidden="true" />
-            <LockIcon />
-            <span className="project-preview__url-text">{domain}</span>
-          </div>
-
-          <div className="project-preview__actions">
-            <div className="project-preview__viewport-toggle" role="group" aria-label="Device viewport">
-              <button
-                type="button"
-                className={`viewport-btn ${deviceMode === "desktop" ? "is-active" : ""}`}
-                onClick={() => setDeviceMode("desktop")}
-                title="Desktop View (16:10)"
-                aria-pressed={deviceMode === "desktop"}
-              >
-                <DeviceDesktopIcon />
-                <span>Desktop</span>
-              </button>
-              <button
-                type="button"
-                className={`viewport-btn ${deviceMode === "mobile" ? "is-active" : ""}`}
-                onClick={() => setDeviceMode("mobile")}
-                title="Mobile View (Phone)"
-                aria-pressed={deviceMode === "mobile"}
-              >
-                <DeviceMobileIcon />
-                <span>Mobile</span>
-              </button>
-            </div>
-
-            <button
-              type="button"
-              className="project-preview__icon-btn"
-              onClick={reload}
-              title="Reload preview (R)"
-              aria-label="Reload preview"
-            >
-              <ReloadIcon />
-            </button>
-
-            <a
-              className="project-preview__visit-btn"
-              href={project.url}
-              target="_blank"
-              rel="noreferrer"
-              title="Open site in new tab"
-            >
-              <span>Visit site</span>
-              <Arrow diagonal />
-            </a>
-
-            <button
-              autoFocus
-              className="project-preview__close-btn"
-              onClick={onClose}
-              title="Close preview (Esc)"
-              aria-label="Close project preview"
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
+          <h2 id="project-preview-title">{project.title}</h2>
+          <button
+            autoFocus
+            onClick={onClose}
+            aria-label="Close project preview"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
-
         <div className="project-preview__stage">
-          <button
-            type="button"
-            className="project-preview__nav-arrow project-preview__nav-arrow--prev"
-            onClick={goToPrev}
-            aria-label={`Previous project: ${prevProject.title}`}
-            title={`Previous: ${prevProject.title} (←)`}
+          <div className="preview-macbook">
+            <div className="preview-macbook__screen">
+              <iframe
+                src={project.url}
+                title={`${project.title} interactive live website preview`}
+              />
+            </div>
+            <div className="preview-macbook__base">
+              <i />
+            </div>
+          </div>
+          <a
+            className="preview-side-oval-btn"
+            href={project.url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Visit the live site for ${project.title}`}
           >
-            <ChevronLeftIcon />
-            <span className="nav-arrow__label">{prevProject.title}</span>
-          </button>
-
-          <div className={`preview-viewport preview-viewport--${deviceMode}`}>
-            {deviceMode === "desktop" ? (
-              <div className="preview-macbook">
-                <div className="preview-macbook__screen">
-                  {isLoading && (
-                    <div className="preview-screen__loader" aria-live="polite">
-                      <div className="preview-loader__spinner" />
-                      <span>Connecting to live experience...</span>
-                      <small>{domain}</small>
-                    </div>
-                  )}
-                  <iframe
-                    key={`desktop-${project.title}-${reloadKey}`}
-                    src={project.url}
-                    title={`${project.title} live interactive preview`}
-                    onLoad={() => setIsLoading(false)}
-                    style={{ opacity: isLoading ? 0 : 1 }}
-                  />
-                </div>
-                <div className="preview-macbook__base">
-                  <i />
-                </div>
-              </div>
-            ) : (
-              <div className="preview-phone">
-                <div className="preview-phone__shell">
-                  <div className="preview-phone__island" />
-                  <div className="preview-phone__screen">
-                    {isLoading && (
-                      <div className="preview-screen__loader" aria-live="polite">
-                        <div className="preview-loader__spinner" />
-                        <span>Loading mobile view...</span>
-                        <small>{domain}</small>
-                      </div>
-                    )}
-                    <iframe
-                      key={`mobile-${project.title}-${reloadKey}`}
-                      src={project.url}
-                      title={`${project.title} mobile interactive preview`}
-                      onLoad={() => setIsLoading(false)}
-                      style={{ opacity: isLoading ? 0 : 1 }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <button
-            type="button"
-            className="project-preview__nav-arrow project-preview__nav-arrow--next"
-            onClick={goToNext}
-            aria-label={`Next project: ${nextProject.title}`}
-            title={`Next: ${nextProject.title} (→)`}
-          >
-            <span className="nav-arrow__label">{nextProject.title}</span>
-            <ChevronRightIcon />
-          </button>
-        </div>
-
-        <div className="project-preview__footer">
-          <div className="project-preview__title-wrap">
-            <h2 id="project-preview-title">{project.title}</h2>
-            <span className="project-preview__status-pill">Interactive Live Preview</span>
-          </div>
-          <div className="project-preview__shortcuts">
-            <span><kbd>←</kbd> <kbd>→</kbd> Navigate</span>
-            <span><kbd>R</kbd> Reload</span>
-            <span><kbd>Esc</kbd> Close</span>
-          </div>
+            <span>Visit site</span>
+            <Arrow diagonal />
+          </a>
         </div>
       </div>
     </div>
@@ -1578,7 +1346,6 @@ export default function App() {
         <ProjectPreviewModal
           project={previewProject}
           onClose={() => setPreviewProject(null)}
-          onSelectProject={setPreviewProject}
         />
       )}
       <Contact />
