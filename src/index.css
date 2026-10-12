@@ -181,14 +181,36 @@ body.qa-open .cursor {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(28rem, 72vw);
-  transform: translate(-50%, -48%) scale(.92);
+  width: clamp(22rem, 54vw, 44rem);
+  max-width: 86vw;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
-  z-index: 1;
+  z-index: 2;
+  pointer-events: none;
 }
 
-.preloader__portrait .portrait-tag {
-  display: none;
+.preloader__glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(56vw, 38rem);
+  height: min(42vw, 26rem);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(185, 228, 200, 0.24) 0%, rgba(25, 106, 78, 0.28) 50%, transparent 75%);
+  filter: blur(35px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.preloader__portrait-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.38));
 }
 
 .preloader__style {

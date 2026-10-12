@@ -140,33 +140,28 @@ function samplePortraitTargets(
   const maskContext = mask.getContext("2d", { willReadFrequently: true })
   if (!maskContext) return []
 
-  mask.width = 180
-  mask.height = 210
-  const scale = Math.min(
-    (mask.width * 0.88) / image.naturalWidth,
-    (mask.height * 0.92) / image.naturalHeight,
-  )
-  const drawWidth = image.naturalWidth * scale
-  const drawHeight = image.naturalHeight * scale
-  const offsetX = (mask.width - drawWidth) / 2
-  const offsetY = mask.height - drawHeight
-  maskContext.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
+  const imgW = image.naturalWidth || 600
+  const imgH = image.naturalHeight || 350
+  mask.width = 240
+  mask.height = Math.max(100, Math.round(240 * (imgH / imgW)))
+  maskContext.drawImage(image, 0, 0, mask.width, mask.height)
   const pixels = maskContext.getImageData(0, 0, mask.width, mask.height).data
   const candidates: Point[] = []
 
-  for (let y = 0; y < mask.height; y += 3) {
-    for (let x = 0; x < mask.width; x += 3) {
-      if (pixels[(y * mask.width + x) * 4 + 3] > 80) {
+  for (let y = 0; y < mask.height; y += 2) {
+    for (let x = 0; x < mask.width; x += 2) {
+      if (pixels[(y * mask.width + x) * 4 + 3] > 60) {
         candidates.push({ x, y })
       }
     }
   }
 
-  const displayHeight = Math.min(height * 0.76, 700)
-  const displayWidth = displayHeight * (mask.width / mask.height)
+  const displayWidth = Math.min(width * 0.65, 660)
+  const displayHeight = displayWidth * (mask.height / mask.width)
   const left = (width - displayWidth) / 2
-  const top = height * 0.52 - displayHeight * 0.5
+  const top = height * 0.5 - displayHeight * 0.5
   const targets: Point[] = []
+  if (candidates.length === 0) return []
   const step = Math.max(1, Math.floor(candidates.length / count))
 
   for (
@@ -290,8 +285,8 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
     timeline.current?.kill()
     gsap.to(root.current, {
       yPercent: -100,
-      duration: 0.7,
-      ease: "power4.inOut",
+      duration: 0.85,
+      ease: "power3.inOut",
       onComplete,
     })
   }
@@ -316,7 +311,7 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
 
     let particles: Particle[] = []
     const portraitImage = new Image()
-    portraitImage.src = portraitCutout
+    portraitImage.src = portraitSeatedCropped
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 1.5)
       const bounds = container.getBoundingClientRect()
@@ -351,8 +346,8 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
         .timeline({ onComplete: finish })
         .to(state, {
           progress: 1,
-          duration: 2.8,
-          ease: "power3.inOut",
+          duration: 2.6,
+          ease: "power2.inOut",
           onUpdate: () =>
             drawParticles(
               context,
@@ -362,22 +357,23 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
               state.progress,
             ),
         })
-        .to(
+        .fromTo(
           ".preloader__portrait",
-          { opacity: 1, scale: 1, duration: 0.55, ease: "power2.out" },
-          "-=.35",
+          { opacity: 0, scale: 0.94, y: 15 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.85, ease: "power2.out" },
+          "-=0.7",
         )
         .to(
           node,
-          { opacity: 0, scale: 1.07, duration: 0.6, ease: "power2.inOut" },
-          "+=.16",
+          { opacity: 0, duration: 0.7, ease: "power2.inOut" },
+          "-=0.4",
         )
         .to(
           ".preloader__identity",
-          { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
-          "-=.5",
+          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+          "-=0.5",
         )
-        .to({}, { duration: 0.35 })
+        .to({}, { duration: 0.45 })
     }, root)
 
     const labelTimer = window.setInterval(() => {
@@ -412,7 +408,12 @@ function Preloader({ onComplete }: { onComplete: () => void }) {
       </div>
       <canvas ref={canvas} className="preloader__canvas" aria-hidden="true" />
       <div className="preloader__portrait" aria-hidden="true">
-        <PortraitArtwork compact />
+        <span className="preloader__glow" aria-hidden="true" />
+        <img
+          src={portraitSeatedCropped}
+          alt="Quamar Abrar seated"
+          className="preloader__portrait-img"
+        />
       </div>
       <div className="preloader__style" aria-hidden="true">
         <span>{String(philosophies.indexOf(label) + 1).padStart(2, "0")}</span>
